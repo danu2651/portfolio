@@ -431,7 +431,7 @@ const ProjectsSection = () => {
       (prev) => (prev - 1 + PROJECTS_DATA.length) % PROJECTS_DATA.length,
     );
 
-  const getOffset = (index) => {
+  const getOffset = (index: number) => {
     const total = PROJECTS_DATA.length;
     let offset = (index - currentIndex) % total;
     if (offset < -Math.floor(total / 2)) offset += total;
