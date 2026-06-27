@@ -3,7 +3,7 @@
 Welcome to my personal portfolio website built with **Next.js**.  
 This project showcases my skills, selected projects, and contact information.
 
-[View Live Project](https://my-profile-three-mu.vercel.app/)
+[View Live Project](https://portfolio-sage-three-43.vercel.app/)
 
 ---
 
