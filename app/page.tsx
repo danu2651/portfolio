@@ -12,7 +12,7 @@ import {
 // ============================================================================
 // 0. MOTION SYSTEM: Cinematic Easing & Variants
 // ============================================================================
-const cinematicEase = [0.16, 1, 0.3, 1];
+const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 const fadeUpBlur = {
   hidden: { opacity: 0, y: 40, filter: "blur(12px)" },
@@ -41,18 +41,19 @@ const staggerContainer = {
   },
 };
 
-const MagneticWrapper = ({ 
-  children, 
-  className 
-}: { 
-  children: React.ReactNode; 
-  className?: string; 
+const MagneticWrapper = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = e;
-    const { height, width, left, top } = e.currentTarget.getBoundingClientRect();
+    const { height, width, left, top } =
+      e.currentTarget.getBoundingClientRect();
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
     setPosition({ x: middleX * 0.15, y: middleY * 0.15 });
