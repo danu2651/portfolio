@@ -41,13 +41,18 @@ const staggerContainer = {
   },
 };
 
-const MagneticWrapper = ({ children, className }) => {
+const MagneticWrapper = ({ 
+  children, 
+  className 
+}: { 
+  children: React.ReactNode; 
+  className?: string; 
+}) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  const handleMouse = (e) => {
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
     const { clientX, clientY } = e;
-    const { height, width, left, top } =
-      e.currentTarget.getBoundingClientRect();
+    const { height, width, left, top } = e.currentTarget.getBoundingClientRect();
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
     setPosition({ x: middleX * 0.15, y: middleY * 0.15 });
