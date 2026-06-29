@@ -850,19 +850,19 @@ const FooterSection = () => (
         </span>
         <div className="flex flex-col space-y-3">
           <a
-            href="#"
+            href="https://www.linkedin.com/in/daniel-nigussie-52193436b/"
             className="font-sans text-[15px] font-bold tracking-wider text-neutral-300 hover:text-white hover:translate-x-1 transition-all duration-500 w-fit"
           >
             LinkedIn
           </a>
           <a
-            href="#"
+            href="https://github.com/danu2651"
             className="font-sans text-[15px] font-bold tracking-wider text-neutral-300 hover:text-white hover:translate-x-1 transition-all duration-500 w-fit"
           >
             GitHub
           </a>
           <a
-            href="#"
+            href="https://www.upwork.com/freelancers/~01c30f33088131236c"
             className="font-sans text-[15px] font-bold tracking-wider text-neutral-300 hover:text-white hover:translate-x-1 transition-all duration-500 w-fit"
           >
             Upwork
