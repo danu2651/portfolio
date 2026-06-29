@@ -669,49 +669,14 @@ const CertificatesSection = () => {
 // ============================================================================
 // 3. NEW SECTIONS: Contact Form & Footer
 // ============================================================================
+import { useForm } from "@formspree/react";
 // Assumes you already have motion, cinematicEase, and MagneticWrapper imported
 
 const ContactSection = () => {
   const words = ["LET'S", "GET IN", "TOUCH"];
 
-  // 1. Add state to track form submission
-  const [status, setStatus] = useState<
-    "idle" | "submitting" | "success" | "error"
-  >("idle");
-
-  // 2. Add the submit handler
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setStatus("submitting");
-
-    const form = e.currentTarget;
-    const data = new FormData(form);
-
-    try {
-      // IMPORTANT: Replace YOUR_ENDPOINT_HERE with your actual Formspree ID (e.g. xabcdefg)
-      const response = await fetch(
-        "https://formspree.io/f/YOUR_ENDPOINT_HERE",
-        {
-          method: "POST",
-          body: data,
-          headers: { Accept: "application/json" },
-        },
-      );
-
-      if (response.ok) {
-        setStatus("success");
-        form.reset();
-        // Reset button back to normal after 3 seconds
-        setTimeout(() => setStatus("idle"), 3000);
-      } else {
-        setStatus("error");
-        setTimeout(() => setStatus("idle"), 3000);
-      }
-    } catch (error) {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 3000);
-    }
-  };
+  // 1. Initialize Formspree's hook with your specific form ID
+  const [state, handleSubmit] = useForm("mpqglkvp");
 
   return (
     <section
@@ -769,6 +734,7 @@ const ContactSection = () => {
         </motion.div>
 
         <div className="flex flex-col justify-center w-full max-w-md mx-auto md:ml-auto">
+          {/* 2. Attach Formspree's handleSubmit */}
           <motion.form
             initial="hidden"
             whileInView="visible"
@@ -781,9 +747,8 @@ const ContactSection = () => {
               },
             }}
             className="w-full flex flex-col gap-10"
-            onSubmit={handleSubmit} // 3. Replaced placeholder with actual handler
+            onSubmit={handleSubmit}
           >
-            {/* 4. Added "name" attributes to the configuration array */}
             {[
               {
                 type: "text",
@@ -814,17 +779,17 @@ const ContactSection = () => {
               >
                 {field.isTextArea ? (
                   <textarea
-                    name={field.name} // Added name
+                    name={field.name}
                     placeholder={field.placeholder}
-                    required // Added required
+                    required
                     className="w-full bg-transparent border-b border-black/20 pb-4 text-[13px] font-mono tracking-widest text-black outline-none transition-colors duration-500 focus:border-black resize-none h-20 placeholder:text-black/40"
                   />
                 ) : (
                   <input
                     type={field.type}
-                    name={field.name} // Added name
+                    name={field.name}
                     placeholder={field.placeholder}
-                    required // Added required
+                    required
                     className="w-full bg-transparent border-b border-black/20 pb-4 text-[13px] font-mono tracking-widest text-black outline-none transition-colors duration-500 focus:border-black placeholder:text-black/40"
                   />
                 )}
@@ -844,14 +809,17 @@ const ContactSection = () => {
               <MagneticWrapper className="self-start md:self-end mt-2">
                 <button
                   type="submit"
-                  disabled={status === "submitting"}
+                  disabled={state.submitting || state.succeeded}
                   className="px-10 py-3.5 rounded-full border border-black/20 font-sans font-bold text-[10px] tracking-[0.2em] uppercase text-black hover:bg-black hover:text-white transition-all duration-500 flex items-center gap-3 group shadow-sm w-full md:w-auto disabled:opacity-50 disabled:pointer-events-none"
                 >
-                  {/* 5. Dynamic text based on status while keeping your exact layout */}
-                  {status === "idle" && "SEND"}
-                  {status === "submitting" && "SENDING..."}
-                  {status === "success" && "SENT ✓"}
-                  {status === "error" && "ERROR"}
+                  {/* 3. Use Formspree's state to change button text dynamically */}
+                  {!state.submitting &&
+                    !state.succeeded &&
+                    !state.errors &&
+                    "SEND"}
+                  {state.submitting && "SENDING..."}
+                  {state.succeeded && "SENT ✓"}
+                  {state.errors && "ERROR"}
 
                   <span className="transform transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">
                     ↗
