@@ -669,9 +669,49 @@ const CertificatesSection = () => {
 // ============================================================================
 // 3. NEW SECTIONS: Contact Form & Footer
 // ============================================================================
+// Assumes you already have motion, cinematicEase, and MagneticWrapper imported
 
 const ContactSection = () => {
   const words = ["LET'S", "GET IN", "TOUCH"];
+
+  // 1. Add state to track form submission
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+
+  // 2. Add the submit handler
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("submitting");
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      // IMPORTANT: Replace YOUR_ENDPOINT_HERE with your actual Formspree ID (e.g. xabcdefg)
+      const response = await fetch(
+        "https://formspree.io/f/YOUR_ENDPOINT_HERE",
+        {
+          method: "POST",
+          body: data,
+          headers: { Accept: "application/json" },
+        },
+      );
+
+      if (response.ok) {
+        setStatus("success");
+        form.reset();
+        // Reset button back to normal after 3 seconds
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
 
   return (
     <section
@@ -741,12 +781,23 @@ const ContactSection = () => {
               },
             }}
             className="w-full flex flex-col gap-10"
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit} // 3. Replaced placeholder with actual handler
           >
+            {/* 4. Added "name" attributes to the configuration array */}
             {[
-              { type: "text", placeholder: "Name", isTextArea: false },
-              { type: "email", placeholder: "Email", isTextArea: false },
-              { placeholder: "Message", isTextArea: true },
+              {
+                type: "text",
+                name: "name",
+                placeholder: "Name",
+                isTextArea: false,
+              },
+              {
+                type: "email",
+                name: "email",
+                placeholder: "Email",
+                isTextArea: false,
+              },
+              { name: "message", placeholder: "Message", isTextArea: true },
             ].map((field, i) => (
               <motion.div
                 key={i}
@@ -763,13 +814,17 @@ const ContactSection = () => {
               >
                 {field.isTextArea ? (
                   <textarea
+                    name={field.name} // Added name
                     placeholder={field.placeholder}
+                    required // Added required
                     className="w-full bg-transparent border-b border-black/20 pb-4 text-[13px] font-mono tracking-widest text-black outline-none transition-colors duration-500 focus:border-black resize-none h-20 placeholder:text-black/40"
                   />
                 ) : (
                   <input
                     type={field.type}
+                    name={field.name} // Added name
                     placeholder={field.placeholder}
+                    required // Added required
                     className="w-full bg-transparent border-b border-black/20 pb-4 text-[13px] font-mono tracking-widest text-black outline-none transition-colors duration-500 focus:border-black placeholder:text-black/40"
                   />
                 )}
@@ -789,9 +844,15 @@ const ContactSection = () => {
               <MagneticWrapper className="self-start md:self-end mt-2">
                 <button
                   type="submit"
-                  className="px-10 py-3.5 rounded-full border border-black/20 font-sans font-bold text-[10px] tracking-[0.2em] uppercase text-black hover:bg-black hover:text-white transition-all duration-500 flex items-center gap-3 group shadow-sm w-full md:w-auto"
+                  disabled={status === "submitting"}
+                  className="px-10 py-3.5 rounded-full border border-black/20 font-sans font-bold text-[10px] tracking-[0.2em] uppercase text-black hover:bg-black hover:text-white transition-all duration-500 flex items-center gap-3 group shadow-sm w-full md:w-auto disabled:opacity-50 disabled:pointer-events-none"
                 >
-                  SEND{" "}
+                  {/* 5. Dynamic text based on status while keeping your exact layout */}
+                  {status === "idle" && "SEND"}
+                  {status === "submitting" && "SENDING..."}
+                  {status === "success" && "SENT ✓"}
+                  {status === "error" && "ERROR"}
+
                   <span className="transform transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1">
                     ↗
                   </span>
